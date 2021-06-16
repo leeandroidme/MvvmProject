@@ -3,7 +3,6 @@ package com.newland.mvvmproject.module.register
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.newland.mvvmproject.module.register.RegisterRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
