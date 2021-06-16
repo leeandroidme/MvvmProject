@@ -1,4 +1,4 @@
-# MvvmProject
+# MvvmProject MVVM项目框架
 以前写的项目基本基于MVP框架进行开发，以前不是很喜欢MVVM，主要以前的思路就是XML中的数据关联字段name和代码中的字段name关联性太强，一旦出现改动出现错误调试可能ide不能很快定位错误
 最近看到官网也在一直推MVVM项目架构，在网上查看了很多，感觉五花八门，有的基于databinding有的基于dababinding+livedata 
 一直在想如果是dababinding，布局文件中的data指向的是viewmodel，viewmodel弹框等ui操作怎么弄，疑惑？
