@@ -2,9 +2,11 @@ package com.newland.mvvmproject.module.register
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import com.newland.mvvmproject.di.base.BaseActivity
 import com.newland.mvvmproject.R
+import com.newland.mvvmproject.extensions.showToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterActivity : BaseActivity() {
@@ -21,6 +23,15 @@ class RegisterActivity : BaseActivity() {
         mViewModel.message.observe(this, {
             messageTv.setText(it)
             Log.e("mesa=====", it)
+        })
+        mViewModel.historyData.observe(this,{
+            showToast(it.title)
+        })
+        findViewById<View>(R.id.btn_add).setOnClickListener({
+            mViewModel.addHistory()
+        })
+        findViewById<View>(R.id.btn_query).setOnClickListener({
+            mViewModel.getHistory()
         })
     }
 }

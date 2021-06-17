@@ -20,7 +20,7 @@ class MvvmApplication : Application() {
             androidLogger(Level.ERROR)
             androidContext(applicationContext)
             androidFileProperties()
-            modules(viewModelModule, apiModule, repositoryModule)
+            modules(viewModelModule, apiModule, repositoryModule, databaseModule)
         }
     }
 }
