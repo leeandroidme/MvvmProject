@@ -6,18 +6,22 @@
 
 
 于是开始写一个精简版基于谷歌官网推荐的架构搭建
-采用的技术框架 ViewModel+Koin+LiveData+Retrifit2+Okhttp3+lifecycle+coroutines 这里只做主要的项目支撑，对于图片、json处理等一些自行选择
-对于是否加入room根据自己项目需求自己配置了，好多简单项目可以不用数据库
+采用的技术框架 ViewModel+Koin+LiveData+room+Retrifit2+Okhttp3+lifecycle+coroutines 这里只做主要的项目支撑，对于图片、json处理等一些自行选择
+
 
 这是Android官网推荐的项目架构
 ![MVVM架构图](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png?hl=zh_cn)
 
 ```
 	  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0-native-mt'
-    //---------------------------lifecycle viewmodel livedata----------------------------
+    //---------------------------lifecycle viewmodel livedata room----------------------------
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+
+    implementation "androidx.room:room-ktx:2.3.0"
+    implementation("androidx.room:room-runtime:2.3.0")
+    kapt("androidx.room:room-compiler:2.3.0")
 
     //--------------------------------koin----------------------------
     implementation "org.koin:koin-android:$koinVersion"
@@ -76,15 +80,54 @@ class RegisterViewModel(private val repository: RegisterRepository) : ViewModel(
             }
         }
     }
+    fun addHistory() {
+        var history = History(0, "10000", 1, "http://xxxxx.com", "android历史纪录", ".....");
+        viewModelScope.launch {
+            flow {
+                emit(repository.insertHistory(history))
+            }.catch {
+                message.value = "添加历史纪录出现问题了"
+            }.collectLatest {
+                message.value = "添加成功了"
+            }
+        }
+    }
+
+    fun getHistory() {
+        viewModelScope.launch {
+            flow {
+                emit(repository.getHistory("10000"))
+            }.catch {
+
+            }.collectLatest {
+                historyData.value = it
+            }
+        }
+    }
 }
 ```
 RegisterRepository
 ```
 class RegisterRepository(private val api: ApiService) {//ApiService基于Retrofit2 OkHttp3实现的网络请求接口
+    //另一种注入方式
+    private val historyDao by KoinJavaComponent.inject(HistoryDao::class.java)
     suspend fun register(username: String, password: String, repass: String) =
         withContext(Dispatchers.IO) {
             api.register(username, password, repass)
         }
+	    suspend fun insertHistory(history: History) {
+        withContext(Dispatchers.IO) {
+            historyDao.insertHistory(history)
+        }
+    }
+
+    suspend fun insertHistory(history: History) =
+        withContext(Dispatchers.IO) {
+            historyDao.insertHistory(history)
+        }
+
+    suspend fun getHistory(user_id: String): History =
+        withContext(Dispatchers.IO) { historyDao.queryHistorys(user_id) }
 }
 ```
 
