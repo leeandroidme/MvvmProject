@@ -1,7 +1,6 @@
 package com.newland.mvvmproject.bean.result
 
 /**
- * @author kuky.
  * @description
  */
 data class RegisterResult(
